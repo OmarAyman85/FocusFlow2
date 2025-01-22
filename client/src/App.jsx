@@ -12,6 +12,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import TaskScreen from "./screens/TaskScreen";
 import ErrorScreen from "./screens/ErrorScreen";
 import RootLayout from "./layouts/RootLayout";
+import TaskEdit from "./components/Tasks/TaskEdit";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,8 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/tasks" element={<TaskScreen />} />
+      <Route path="/tasks/:taskId" element={<TaskEdit />} />
+      <Route path="*" element={<ErrorScreen />} />
     </Route>
   )
 );

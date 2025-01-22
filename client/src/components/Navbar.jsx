@@ -37,7 +37,7 @@ const NavBar = () => {
                 className={({ isActive }) =>
                   `nav-link ${isActive ? "text-success" : ""}`
                 }
-                to="/Task/:id"
+                to="tasks/:id"
               >
                 Task Details
               </NavLink>

@@ -16,8 +16,8 @@ const TaskCard = ({ task, onDelete }) => {
           <p className="card-text">
             Due Date: {new Date(task.dueDate).toLocaleDateString()}
           </p>
-          <NavLink to={`/Task/${task.id}`} className="btn btn-primary">
-            View Details
+          <NavLink to={`/tasks/${task._id}`} className="btn btn-primary">
+            Modify
           </NavLink>
           <button onClick={() => onDelete(task._id)} className="delete-btn">
             <FaTrashAlt />

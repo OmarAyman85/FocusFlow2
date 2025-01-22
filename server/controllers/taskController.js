@@ -34,6 +34,16 @@ export const updateTask = asyncHandler(async (req, res) => {
   }
 });
 
+export const getTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  if (task && task.user.toString() === req.user.id) {
+    res.json(task);
+  } else {
+    res.status(404);
+    throw new Error("Task not found");
+  }
+});
+
 export const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.id);
 
