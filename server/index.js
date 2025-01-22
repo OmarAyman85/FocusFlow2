@@ -6,6 +6,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import taskRoutes from "./routes/taskRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
@@ -13,6 +14,20 @@ import { errorHandler } from "./middleware/errorMiddleware.js";
 dotenv.config();
 const app = express();
 app.use(express.json());
+
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000", // Allow requests from this origin
+//     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
+//     credentials: true, // Allow cookies or Authorization headers
+//   })
+// );
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from this origin
+  })
+);
 
 // Database Connection
 mongoose

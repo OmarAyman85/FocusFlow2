@@ -3,8 +3,10 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import asyncHandler from "express-async-handler";
+import bcrypt from "bcryptjs";
 
 const generateToken = (id) => {
+  console.log("JWT SECRET: ", process.env.JWT_SECRET);
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
