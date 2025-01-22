@@ -53,7 +53,6 @@ const LoginScreen = () => {
       //     withCredentials: true, // If cookies or credentials are required
       //   }
       // );
-      console.log("data: ", data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/tasks");
     } catch (error) {
