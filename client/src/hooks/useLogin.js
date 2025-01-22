@@ -1,4 +1,3 @@
-// hooks/useLogin.js
 import { useState } from "react";
 import axios from "axios";
 import Joi from "joi-browser";
@@ -8,36 +7,44 @@ const useLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const schema = {
+  // Joi schema for validation
+  const schema = Joi.object({
     email: Joi.string().required().email().label("Email"),
     password: Joi.string().required().label("Password"),
-  };
+  });
 
+  // Async validation for form data
   const validate = () => {
-    const errors = {};
-    const result = Joi.validate({ email, password }, schema, {
-      abortEarly: false,
-    });
-    if (result.error) {
-      result.error.details.forEach((detail) => {
-        if (!errors[detail.path[0]]) {
-          errors[detail.path[0]] = [];
+    const { error } = schema.validate(
+      { email, password },
+      { abortEarly: false }
+    );
+    if (error) {
+      const validationErrors = error.details.reduce((acc, curr) => {
+        if (!acc[curr.path[0]]) {
+          acc[curr.path[0]] = [];
         }
-        errors[detail.path[0]].push(detail.message);
-      });
+        acc[curr.path[0]].push(curr.message);
+        return acc;
+      }, {});
+      return validationErrors;
     }
-    return errors;
+    return {};
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
+
+    setLoading(true); // Show loading state
 
     try {
       const { data } = await axios.post(
@@ -47,7 +54,10 @@ const useLogin = () => {
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/tasks");
     } catch (error) {
-      console.error("Invalid credentials");
+      setErrors({ server: ["Invalid credentials or server error"] });
+      console.error("Login failed: ", error.response || error.message);
+    } finally {
+      setLoading(false); // Hide loading state
     }
   };
 
@@ -58,6 +68,7 @@ const useLogin = () => {
     setPassword,
     errors,
     handleSubmit,
+    loading,
   };
 };
 

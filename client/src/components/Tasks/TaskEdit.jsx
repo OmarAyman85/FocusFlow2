@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import axios from "axios";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
 
@@ -12,182 +10,149 @@ const TaskEdit = () => {
     priorityEnum,
     taskId,
     updateTask,
-    fetchTask,
   } = useTasks();
   const [task, setTask] = useState(null);
 
-  //const [errors, setErrors] = useState({});
-  console.log("tasks: ", tasks);
-
-  // useEffect(() => {
-  //   if (taskId) {
-  //     const selectedTask = tasks.find((task) => task._id === taskId);
-  //     if (!selectedTask) {
-  //       fetchTask(); // Fetch the task if it's not in the tasks array
-  //     } else {
-  //       setTask(selectedTask); // Set the task if it's already in the tasks array
-  //     }
-  //   }
-  // }, [tasks, taskId]);
-
+  // Effect to set the task when taskId or tasks change
   useEffect(() => {
     const selectedTask = tasks.find((task) => task._id === taskId);
-    setTask(selectedTask);
+    setTask(selectedTask || null);
   }, [taskId, tasks]);
 
-  // Handle form input changes
-  const handleChange = (e) => {
+  // Handler for form input changes
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setTask({
-      ...task,
+    setTask((prevTask) => ({
+      ...prevTask,
       [name]: value,
-    });
-  };
-
-  // useEffect(() => {
-  //   console.log("Updated task after change:", task);
-  // }, [task]);
+    }));
+  }, []);
 
   if (!task) return <div>Loading...</div>;
+
+  // Render input fields
+  const renderInputField = (
+    type,
+    label,
+    name,
+    value,
+    error,
+    additionalProps = {}
+  ) => (
+    <div className="mb-3">
+      <label htmlFor={name} className="form-label">
+        {label}:
+      </label>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={handleChange}
+        className="form-control"
+        id={name}
+        {...additionalProps}
+      />
+      {error && <div className="text-danger">{error}</div>}
+    </div>
+  );
+
+  // Render radio button options
+  const renderRadioButtons = (label, name, options, selectedValue, error) => (
+    <div className="mb-3">
+      <label htmlFor={name} className="form-label">
+        {label}:
+      </label>
+      {options.map((option) => (
+        <div className="form-check form-check-inline" key={option}>
+          <input
+            type="radio"
+            id={option}
+            name={name}
+            value={option}
+            checked={selectedValue === option}
+            onChange={handleChange}
+            className="form-check-input"
+          />
+          <label htmlFor={option} className="form-check-label">
+            {option.charAt(0).toUpperCase() + option.slice(1)}
+          </label>
+        </div>
+      ))}
+      {error && <div className="text-danger">{error[0]}</div>}
+    </div>
+  );
 
   return (
     <div className="container">
       <div className="row justify-content-md-center">
         <div className="col-8">
-          <div className="mb-5">
-            <form onSubmit={(e) => updateTask(e, task)} noValidate>
-              {/* Title */}
-              <div className="mb-3 mt-5">
-                <label htmlFor="title" className="form-label">
-                  Title:
-                </label>
-                <input
-                  name="title"
-                  value={task.title}
-                  onChange={handleChange}
-                  type="text"
-                  className="form-control"
-                  id="title"
-                />
-                {errors.title && (
-                  <div className="text-danger">{errors.title}</div>
-                )}
-              </div>
+          <form onSubmit={(e) => updateTask(e, task)} noValidate>
+            {/* Title */}
+            {renderInputField(
+              "text",
+              "Title",
+              "title",
+              task.title,
+              errors.title
+            )}
 
-              {/* Category */}
-              <div className="mb-3">
-                <label htmlFor="category" className="form-label">
-                  Category:
-                </label>
-                <input
-                  name="category"
-                  value={task.category}
-                  onChange={handleChange}
-                  type="text"
-                  className="form-control"
-                  id="category"
-                />
-                {errors.category && (
-                  <div className="text-danger">{errors.category}</div>
-                )}
-              </div>
+            {/* Category */}
+            {renderInputField(
+              "text",
+              "Category",
+              "category",
+              task.category,
+              errors.category
+            )}
 
-              {/* Description */}
-              <div className="mb-3">
-                <label htmlFor="description" className="form-label">
-                  Description:
-                </label>
-                <textarea
-                  name="description"
-                  value={task.description}
-                  onChange={handleChange}
-                  className="form-control"
-                  id="description"
-                />
-                {errors.description && (
-                  <div className="text-danger">{errors.description}</div>
-                )}
-              </div>
+            {/* Description */}
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                Description:
+              </label>
+              <textarea
+                name="description"
+                value={task.description}
+                onChange={handleChange}
+                className="form-control"
+                id="description"
+              />
+              {errors.description && (
+                <div className="text-danger">{errors.description}</div>
+              )}
+            </div>
 
-              {/* Priority */}
-              <div className="mb-3">
-                <div className="mr-3">
-                  <label htmlFor="priority" className="form-label mr-3">
-                    Priority:
-                  </label>
-                </div>
-                {priorityEnum.map((p) => (
-                  <div className="form-check form-check-inline" key={p}>
-                    <input
-                      type="radio"
-                      id={p}
-                      name="priority"
-                      value={p}
-                      checked={task.priority === p}
-                      onChange={handleChange}
-                      className="form-check-input"
-                    />
-                    <label htmlFor={p} className="form-check-label">
-                      {p.charAt(0).toUpperCase() + p.slice(1)}
-                    </label>
-                  </div>
-                ))}
-                {errors.priority && (
-                  <div className="text-danger">{errors.priority[0]}</div>
-                )}
-              </div>
+            {/* Priority */}
+            {renderRadioButtons(
+              "Priority",
+              "priority",
+              priorityEnum,
+              task.priority,
+              errors.priority
+            )}
 
-              {/* Status */}
-              <div className="mb-3">
-                <div className="mr-3">
-                  <label htmlFor="status" className="form-label mr-3">
-                    Status:
-                  </label>
-                </div>
-                {statusEnum.map((s) => (
-                  <div className="form-check form-check-inline" key={s}>
-                    <input
-                      type="radio"
-                      id={s}
-                      name="status"
-                      value={s}
-                      checked={task.status === s}
-                      onChange={handleChange}
-                      className="form-check-input"
-                    />
-                    <label htmlFor={s} className="form-check-label">
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </label>
-                  </div>
-                ))}
-                {errors.status && (
-                  <div className="text-danger">{errors.status[0]}</div>
-                )}
-              </div>
+            {/* Status */}
+            {renderRadioButtons(
+              "Status",
+              "status",
+              statusEnum,
+              task.status,
+              errors.status
+            )}
 
-              {/* Due Date */}
-              <div className="mb-3">
-                <label htmlFor="dueDate" className="form-label">
-                  Due Date:
-                </label>
-                <input
-                  name="dueDate"
-                  value={task.dueDate}
-                  onChange={handleChange}
-                  type="datetime-local"
-                  className="form-control"
-                  id="dueDate"
-                />
-                {errors.dueDate && (
-                  <div className="text-danger">{errors.dueDate}</div>
-                )}
-              </div>
+            {/* Due Date */}
+            {renderInputField(
+              "datetime-local",
+              "Due Date",
+              "dueDate",
+              task.dueDate,
+              errors.dueDate
+            )}
 
-              <button type="submit" className="btn btn-success">
-                Update
-              </button>
-            </form>
-          </div>
+            <button type="submit" className="btn btn-success">
+              Update
+            </button>
+          </form>
         </div>
       </div>
     </div>

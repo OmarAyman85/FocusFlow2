@@ -1,5 +1,4 @@
-// components/RegisterForm.js
-import React from "react";
+import React, { useState } from "react";
 import useRegister from "../hooks/useRegister";
 
 const RegisterForm = () => {
@@ -13,10 +12,26 @@ const RegisterForm = () => {
     errors,
     handleSubmit,
   } = useRegister();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Helper function to handle error display
+  const renderError = (fieldName) =>
+    errors[fieldName] && <div className="text-danger">{errors[fieldName]}</div>;
+
+  // Handle form submission with client-side validation
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (name && email && password) {
+      handleSubmit();
+      setIsSubmitted(true);
+    } else {
+      setIsSubmitted(false);
+    }
+  };
 
   return (
     <>
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleFormSubmit} noValidate>
         <div className="mb-3 mt-5">
           <label htmlFor="name" className="form-label">
             Name
@@ -28,8 +43,9 @@ const RegisterForm = () => {
             type="text"
             className="form-control"
             id="name"
+            aria-describedby="nameError"
           />
-          {errors.name && <div className="text-danger">{errors.name}</div>}
+          {renderError("name")}
         </div>
 
         <div className="mb-3">
@@ -43,8 +59,9 @@ const RegisterForm = () => {
             type="email"
             className="form-control"
             id="email"
+            aria-describedby="emailError"
           />
-          {errors.email && <div className="text-danger">{errors.email[0]}</div>}
+          {renderError("email")}
         </div>
 
         <div className="mb-3">
@@ -58,15 +75,20 @@ const RegisterForm = () => {
             type="password"
             className="form-control"
             id="password"
+            aria-describedby="passwordError"
           />
-          {errors.password && (
-            <div className="text-danger">{errors.password}</div>
-          )}
+          {renderError("password")}
         </div>
 
         <button type="submit" className="btn btn-success">
           Register
         </button>
+
+        {isSubmitted && (
+          <div className="mt-3 text-success">
+            <strong>Registration successful!</strong>
+          </div>
+        )}
       </form>
     </>
   );

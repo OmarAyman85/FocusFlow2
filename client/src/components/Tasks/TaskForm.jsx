@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const TaskForm = ({
   title,
@@ -18,6 +18,9 @@ const TaskForm = ({
   errors,
   createTask,
 }) => {
+  // Handle input changes for both text fields and radio buttons
+  const handleInputChange = (setter) => (e) => setter(e.target.value);
+
   return (
     <div className="container">
       <div className="row justify-content-md-center">
@@ -32,7 +35,7 @@ const TaskForm = ({
                 <input
                   name="title"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={handleInputChange(setTitle)}
                   type="text"
                   className="form-control"
                   id="title"
@@ -50,7 +53,7 @@ const TaskForm = ({
                 <input
                   name="category"
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={handleInputChange(setCategory)}
                   type="text"
                   className="form-control"
                   id="category"
@@ -68,7 +71,7 @@ const TaskForm = ({
                 <textarea
                   name="description"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleInputChange(setDescription)}
                   className="form-control"
                   id="description"
                 />
@@ -79,27 +82,27 @@ const TaskForm = ({
 
               {/* Priority */}
               <div className="mb-3">
-                <div className="mr-3">
-                  <label htmlFor="priority" className="form-label mr-3">
-                    Priority:
-                  </label>
+                <label htmlFor="priority" className="form-label mr-3">
+                  Priority:
+                </label>
+                <div>
+                  {priorityEnum.map((p) => (
+                    <div className="form-check form-check-inline" key={p}>
+                      <input
+                        type="radio"
+                        id={p}
+                        name="priority"
+                        value={p}
+                        checked={priority === p}
+                        onChange={handleInputChange(setPriority)}
+                        className="form-check-input"
+                      />
+                      <label htmlFor={p} className="form-check-label">
+                        {p.charAt(0).toUpperCase() + p.slice(1)}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-                {priorityEnum.map((p) => (
-                  <div className="form-check form-check-inline" key={p}>
-                    <input
-                      type="radio"
-                      id={p}
-                      name="priority"
-                      value={p}
-                      checked={priority === p}
-                      onChange={(e) => setPriority(e.target.value)}
-                      className="form-check-input"
-                    />
-                    <label htmlFor={p} className="form-check-label">
-                      {p.charAt(0).toUpperCase() + p.slice(1)}
-                    </label>
-                  </div>
-                ))}
                 {errors.priority && (
                   <div className="text-danger">{errors.priority[0]}</div>
                 )}
@@ -107,27 +110,27 @@ const TaskForm = ({
 
               {/* Status */}
               <div className="mb-3">
-                <div className="mr-3">
-                  <label htmlFor="status" className="form-label mr-3">
-                    Status:
-                  </label>
+                <label htmlFor="status" className="form-label mr-3">
+                  Status:
+                </label>
+                <div>
+                  {statusEnum.map((s) => (
+                    <div className="form-check form-check-inline" key={s}>
+                      <input
+                        type="radio"
+                        id={s}
+                        name="status"
+                        value={s}
+                        checked={status === s}
+                        onChange={handleInputChange(setStatus)}
+                        className="form-check-input"
+                      />
+                      <label htmlFor={s} className="form-check-label">
+                        {s.charAt(0).toUpperCase() + s.slice(1)}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-                {statusEnum.map((s) => (
-                  <div className="form-check form-check-inline" key={s}>
-                    <input
-                      type="radio"
-                      id={s}
-                      name="status"
-                      value={s}
-                      checked={status === s}
-                      onChange={(e) => setStatus(e.target.value)}
-                      className="form-check-input"
-                    />
-                    <label htmlFor={s} className="form-check-label">
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </label>
-                  </div>
-                ))}
                 {errors.status && (
                   <div className="text-danger">{errors.status[0]}</div>
                 )}
@@ -141,7 +144,7 @@ const TaskForm = ({
                 <input
                   name="dueDate"
                   value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  onChange={handleInputChange(setDueDate)}
                   type="datetime-local"
                   className="form-control"
                   id="dueDate"
@@ -151,8 +154,9 @@ const TaskForm = ({
                 )}
               </div>
 
+              {/* Submit Button */}
               <button type="submit" className="btn btn-success">
-                Submit
+                Submit task
               </button>
             </form>
           </div>

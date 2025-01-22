@@ -9,47 +9,61 @@ const useRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const schema = {
-    name: Joi.string().required().label("Name"),
-    email: Joi.string().required().email().label("Email"),
-    password: Joi.string().required().label("Password"),
-  };
+  const schema = Joi.object({
+    name: Joi.string().min(3).max(30).required().label("Name"),
+    email: Joi.string().email().required().label("Email"),
+    password: Joi.string().min(6).required().label("Password"),
+  });
 
   const validate = () => {
-    const errors = {};
-    const result = Joi.validate({ name, email, password }, schema, {
-      abortEarly: false,
-    });
+    const result = schema.validate(
+      { name, email, password },
+      { abortEarly: false }
+    );
+    const validationErrors = {};
     if (result.error) {
       result.error.details.forEach((detail) => {
-        if (!errors[detail.path[0]]) {
-          errors[detail.path[0]] = [];
+        const field = detail.path[0];
+        if (!validationErrors[field]) {
+          validationErrors[field] = [];
         }
-        errors[detail.path[0]].push(detail.message);
+        validationErrors[field].push(detail.message);
       });
     }
-    return errors;
+    return validationErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
+    setLoading(true);
+
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setLoading(false);
       return;
     }
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3001/api/auth/register", // Replace with actual URL
+        "http://localhost:3001/api/auth/register", // Replace with actual API URL
         { name, email, password }
       );
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/tasks");
     } catch (error) {
-      console.error("Error registering user");
+      if (error.response) {
+        setErrors({
+          general: error.response.data.message || "Registration failed.",
+        });
+      } else {
+        setErrors({ general: "Server error. Please try again later." });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,6 +76,7 @@ const useRegister = () => {
     setPassword,
     errors,
     handleSubmit,
+    loading,
   };
 };
 

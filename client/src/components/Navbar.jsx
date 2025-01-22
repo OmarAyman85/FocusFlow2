@@ -1,7 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import clsx from "clsx";
 
 const NavBar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Helper function for active link styling
+  const getLinkClassName = (isActive) =>
+    clsx("nav-link", { "text-success": isActive });
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Handle search form submission
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // You can add search functionality here
+    console.log("Search submitted:", searchTerm);
+    setSearchTerm(""); // Clear search field after submit
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
       <div className="container-fluid">
@@ -23,30 +43,16 @@ const NavBar = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "text-success" : ""}`
-                }
+                className={({ isActive }) => getLinkClassName(isActive)}
                 aria-current="page"
                 to="/tasks"
               >
                 Dashboard
               </NavLink>
             </li>
-            {/* <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "text-success" : ""}`
-                }
-                to="tasks/:id"
-              >
-                Task Details
-              </NavLink>
-            </li> */}
             <li className="nav-item">
               <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "text-success" : ""}`
-                }
+                className={({ isActive }) => getLinkClassName(isActive)}
                 to="/Login"
               >
                 Login
@@ -54,9 +60,7 @@ const NavBar = () => {
             </li>
             <li className="nav-item">
               <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "text-success" : ""}`
-                }
+                className={({ isActive }) => getLinkClassName(isActive)}
                 to="/Register"
               >
                 Register
@@ -64,9 +68,7 @@ const NavBar = () => {
             </li>
             <li className="nav-item">
               <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "text-success" : ""}`
-                }
+                className={({ isActive }) => getLinkClassName(isActive)}
                 to="/Profile"
               >
                 Profile
@@ -75,21 +77,24 @@ const NavBar = () => {
             <li className="nav-item">
               <NavLink
                 className={({ isActive }) =>
-                  `nav-link disabled ${isActive ? "text-success" : ""}`
+                  getLinkClassName(isActive) + " disabled"
                 }
                 aria-disabled="true"
+                to="#"
               >
                 User
               </NavLink>
             </li>
           </ul>
-          <form className="d-flex" role="search">
+          <form className="d-flex" role="search" onSubmit={handleSearchSubmit}>
             <input
               className="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
-            ></input>
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
             <button className="btn btn-outline-success" type="submit">
               Search
             </button>
