@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Joi from "joi-browser";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Validation Schema
 const taskValidationSchema = {
@@ -28,6 +29,9 @@ const useTasks = () => {
 
   const statusEnum = ["pending", "in-progress", "completed"];
   const priorityEnum = ["low", "medium", "high"];
+
+  const navigate = useNavigate();
+  const { taskId } = useParams();
 
   const fetchTasks = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -60,11 +64,34 @@ const useTasks = () => {
     axios
       .get(`http://localhost:3001/api/tasks/${taskId}`, config)
       .then((response) => {
-        console.log("this is the data from the hook: ", response.data);
         setTasks(response.data);
       })
       .catch((error) => {
         console.error("Error fetching task:", error);
+      });
+  };
+
+  const updateTask = (e, updatedTask) => {
+    e.preventDefault();
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!userInfo || !userInfo.token) {
+      throw new Error("User is not authenticated.");
+    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    axios
+      .put(`http://localhost:3001/api/tasks/${taskId}`, updatedTask, config)
+      .then((response) => {
+        // After updating the task, redirect to the task list or task details page
+        navigate("/tasks");
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+        setErrors({ general: "Failed to update task. Please try again." });
       });
   };
 
@@ -167,8 +194,10 @@ const useTasks = () => {
     loading,
     errorMessage, // Expose error messages
     createTask,
+    taskId,
     deleteTask,
     fetchTask,
+    updateTask,
   };
 };
 

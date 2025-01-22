@@ -1,21 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
 
 const TaskEdit = () => {
-  const { tasks, errors, statusEnum, priorityEnum } = useTasks();
-  const { taskId } = useParams();
+  const {
+    tasks = [],
+    errors,
+    statusEnum,
+    priorityEnum,
+    taskId,
+    updateTask,
+    fetchTask,
+  } = useTasks();
   const [task, setTask] = useState(null);
 
-  const navigate = useNavigate();
   //const [errors, setErrors] = useState({});
+  console.log("tasks: ", tasks);
+
+  // useEffect(() => {
+  //   if (taskId) {
+  //     const selectedTask = tasks.find((task) => task._id === taskId);
+  //     if (!selectedTask) {
+  //       fetchTask(); // Fetch the task if it's not in the tasks array
+  //     } else {
+  //       setTask(selectedTask); // Set the task if it's already in the tasks array
+  //     }
+  //   }
+  // }, [tasks, taskId]);
 
   useEffect(() => {
     const selectedTask = tasks.find((task) => task._id === taskId);
-    if (selectedTask) setTask(selectedTask);
-  }, [tasks, taskId]);
+    setTask(selectedTask);
+  }, [taskId, tasks]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -26,30 +44,9 @@ const TaskEdit = () => {
     });
   };
 
-  // Handle form submission to update the task
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (!userInfo || !userInfo.token) {
-      throw new Error("User is not authenticated.");
-    }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    axios
-      .put(`http://localhost:3001/api/tasks/${taskId}`, task, config)
-      .then((response) => {
-        // After updating the task, redirect to the task list or task details page
-        navigate("/tasks");
-      })
-      .catch((error) => {
-        console.error("Error updating task:", error);
-        setErrors({ general: "Failed to update task. Please try again." });
-      });
-  };
+  // useEffect(() => {
+  //   console.log("Updated task after change:", task);
+  // }, [task]);
 
   if (!task) return <div>Loading...</div>;
 
@@ -58,7 +55,7 @@ const TaskEdit = () => {
       <div className="row justify-content-md-center">
         <div className="col-8">
           <div className="mb-5">
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={(e) => updateTask(e, task)} noValidate>
               {/* Title */}
               <div className="mb-3 mt-5">
                 <label htmlFor="title" className="form-label">
