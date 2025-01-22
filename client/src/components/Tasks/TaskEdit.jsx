@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 
 const TaskEdit = () => {
   const { taskId } = useParams(); // Assuming you're passing the task ID as a URL parameter
-
+  const statusEnum = ["pending", "in-progress", "completed"];
+  const priorityEnum = ["low", "medium", "high"];
   const [task, setTask] = useState({
     title: "",
     category: "",
@@ -63,89 +64,145 @@ const TaskEdit = () => {
   };
 
   return (
-    <div className="task-edit">
-      <h2>Edit Task</h2>
-      {errors.general && <p className="error">{errors.general}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={task.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
+    <div className="container">
+      <div className="row justify-content-md-center">
+        <div className="col-8">
+          <div className="mb-5">
+            <form onSubmit={handleSubmit} noValidate>
+              {/* Title */}
+              <div className="mb-3 mt-5">
+                <label htmlFor="title" className="form-label">
+                  Title:
+                </label>
+                <input
+                  name="title"
+                  value={task.title}
+                  onChange={handleChange}
+                  type="text"
+                  className="form-control"
+                  id="title"
+                />
+                {errors.title && (
+                  <div className="text-danger">{errors.title}</div>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="category">Category</label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={task.category}
-            onChange={handleChange}
-            required
-          />
-        </div>
+              {/* Category */}
+              <div className="mb-3">
+                <label htmlFor="category" className="form-label">
+                  Category:
+                </label>
+                <input
+                  name="category"
+                  value={task.category}
+                  onChange={handleChange}
+                  type="text"
+                  className="form-control"
+                  id="category"
+                />
+                {errors.category && (
+                  <div className="text-danger">{errors.category}</div>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={task.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
+              {/* Description */}
+              <div className="mb-3">
+                <label htmlFor="description" className="form-label">
+                  Description:
+                </label>
+                <textarea
+                  name="description"
+                  value={task.description}
+                  onChange={handleChange}
+                  className="form-control"
+                  id="description"
+                />
+                {errors.description && (
+                  <div className="text-danger">{errors.description}</div>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="status">Status</label>
-          <select
-            id="status"
-            name="status"
-            value={task.status}
-            onChange={handleChange}
-            required
-          >
-            <option value="To Do">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
+              {/* Priority */}
+              <div className="mb-3">
+                <div className="mr-3">
+                  <label htmlFor="priority" className="form-label mr-3">
+                    Priority:
+                  </label>
+                </div>
+                {priorityEnum.map((p) => (
+                  <div className="form-check form-check-inline" key={p}>
+                    <input
+                      type="radio"
+                      id={p}
+                      name="priority"
+                      value={p}
+                      checked={task.priority === p}
+                      onChange={handleChange}
+                      className="form-check-input"
+                    />
+                    <label htmlFor={p} className="form-check-label">
+                      {p.charAt(0).toUpperCase() + p.slice(1)}
+                    </label>
+                  </div>
+                ))}
+                {errors.priority && (
+                  <div className="text-danger">{errors.priority[0]}</div>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="priority">Priority</label>
-          <select
-            id="priority"
-            name="priority"
-            value={task.priority}
-            onChange={handleChange}
-            required
-          >
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
+              {/* Status */}
+              <div className="mb-3">
+                <div className="mr-3">
+                  <label htmlFor="status" className="form-label mr-3">
+                    Status:
+                  </label>
+                </div>
+                {statusEnum.map((s) => (
+                  <div className="form-check form-check-inline" key={s}>
+                    <input
+                      type="radio"
+                      id={s}
+                      name="status"
+                      value={s}
+                      checked={task.status === s}
+                      onChange={handleChange}
+                      className="form-check-input"
+                    />
+                    <label htmlFor={s} className="form-check-label">
+                      {s.charAt(0).toUpperCase() + s.slice(1)}
+                    </label>
+                  </div>
+                ))}
+                {errors.status && (
+                  <div className="text-danger">{errors.status[0]}</div>
+                )}
+              </div>
 
-        <div>
-          <label htmlFor="dueDate">Due Date</label>
-          <input
-            type="datetime-local"
-            id="dueDate"
-            name="dueDate"
-            value={task.dueDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
+              {/* Due Date */}
+              <div className="mb-3">
+                <label htmlFor="dueDate" className="form-label">
+                  Due Date:
+                </label>
+                <input
+                  name="dueDate"
+                  value={task.dueDate}
+                  onChange={handleChange}
+                  type="datetime-local"
+                  className="form-control"
+                  id="dueDate"
+                />
+                {errors.dueDate && (
+                  <div className="text-danger">{errors.dueDate}</div>
+                )}
+              </div>
 
-        <button type="submit">Save Changes</button>
-      </form>
+              <button type="submit" className="btn btn-success">
+                Update
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
