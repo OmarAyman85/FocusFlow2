@@ -1,7 +1,9 @@
 import React from "react";
+import { FaTrashAlt } from "react-icons/fa";
+
 import { NavLink } from "react-router-dom";
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task, onDelete }) => {
   return (
     <div className="col-3" key={task.id}>
       <div className="card text-start mb-3">
@@ -17,6 +19,9 @@ const TaskCard = ({ task }) => {
           <NavLink to={`/Task/${task.id}`} className="btn btn-primary">
             View Details
           </NavLink>
+          <button onClick={() => onDelete(task._id)} className="delete-btn">
+            <FaTrashAlt />
+          </button>
         </div>
       </div>
     </div>

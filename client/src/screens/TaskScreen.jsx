@@ -25,6 +25,7 @@ const TaskScreen = () => {
     statusEnum,
     priorityEnum,
     createTask,
+    deleteTask,
   } = useTasks();
 
   return (
@@ -57,7 +58,7 @@ const TaskScreen = () => {
       ) : (
         <div className="row">
           {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} />
+            <TaskCard key={task._id} task={task} onDelete={deleteTask} />
           ))}
         </div>
       )}

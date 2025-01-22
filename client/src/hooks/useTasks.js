@@ -83,6 +83,25 @@ const useTasks = () => {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      if (!userInfo || !userInfo.token) {
+        throw new Error("User is not authenticated.");
+      }
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      await axios.delete(`http://localhost:3001/api/tasks/${taskId}`, config);
+      setTasks(tasks.filter((task) => task._id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   const validate = () => {
     const errors = {};
     const result = Joi.validate(
@@ -127,6 +146,7 @@ const useTasks = () => {
     loading,
     errorMessage, // Expose error messages
     createTask,
+    deleteTask,
   };
 };
 

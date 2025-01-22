@@ -38,7 +38,7 @@ export const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.id);
 
   if (task && task.user.toString() === req.user.id) {
-    await task.remove();
+    await task.deleteOne();
     res.json({ message: "Task removed" });
   } else {
     res.status(404);
