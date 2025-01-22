@@ -47,6 +47,28 @@ const useTasks = () => {
     }
   };
 
+  const fetchTask = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!userInfo || !userInfo.token) {
+      throw new Error("User is not authenticated.");
+    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    axios
+      .get(`http://localhost:3001/api/tasks/${taskId}`, config)
+      .then((response) => {
+        console.log("this is the data from the hook: ", response.data);
+        setTasks(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching task:", error);
+      });
+  };
+
   const createTask = async (e) => {
     e.preventDefault();
 
@@ -147,6 +169,7 @@ const useTasks = () => {
     errorMessage, // Expose error messages
     createTask,
     deleteTask,
+    fetchTask,
   };
 };
 

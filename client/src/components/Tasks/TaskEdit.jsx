@@ -1,43 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import useTasks from "../../hooks/useTasks";
 
 const TaskEdit = () => {
-  const { taskId } = useParams(); // Assuming you're passing the task ID as a URL parameter
-  const statusEnum = ["pending", "in-progress", "completed"];
-  const priorityEnum = ["low", "medium", "high"];
-  const [task, setTask] = useState({
-    title: "",
-    category: "",
-    description: "",
-    status: "",
-    priority: "",
-    dueDate: "",
-  });
+  const { tasks, errors, statusEnum, priorityEnum } = useTasks();
+  const { taskId } = useParams();
+  const [task, setTask] = useState(null);
+  //const [errors, setErrors] = useState({});
 
-  const [errors, setErrors] = useState({});
-
-  // Fetch task data when the component mounts
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (!userInfo || !userInfo.token) {
-      throw new Error("User is not authenticated.");
-    }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    axios
-      .get(`http://localhost:3001/api/tasks/${taskId}`, config)
-      .then((response) => {
-        setTask(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching task:", error);
-      });
-  }, [taskId]);
+    const selectedTask = tasks.find((task) => task._id === taskId);
+    if (selectedTask) setTask(selectedTask);
+  }, [tasks, taskId]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -62,6 +37,8 @@ const TaskEdit = () => {
         setErrors({ general: "Failed to update task. Please try again." });
       });
   };
+
+  if (!task) return <div>Loading...</div>;
 
   return (
     <div className="container">
