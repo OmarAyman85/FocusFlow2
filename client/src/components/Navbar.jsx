@@ -65,6 +65,16 @@ const NavBar = () => {
             <li className="nav-item">
               <NavLink
                 className={({ isActive }) =>
+                  `nav-link ${isActive ? "text-success" : ""}`
+                }
+                to="/Profile"
+              >
+                Profile
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                className={({ isActive }) =>
                   `nav-link disabled ${isActive ? "text-success" : ""}`
                 }
                 aria-disabled="true"
