@@ -30,7 +30,6 @@ const useTasks = () => {
   const priorityEnum = ["low", "medium", "high"];
 
   const fetchTasks = async () => {
-    setLoading(true);
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
@@ -7,6 +8,8 @@ const TaskEdit = () => {
   const { tasks, errors, statusEnum, priorityEnum } = useTasks();
   const { taskId } = useParams();
   const [task, setTask] = useState(null);
+
+  const navigate = useNavigate();
   //const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -26,11 +29,21 @@ const TaskEdit = () => {
   // Handle form submission to update the task
   const handleSubmit = (e) => {
     e.preventDefault();
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!userInfo || !userInfo.token) {
+      throw new Error("User is not authenticated.");
+    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
     axios
-      .put(`/api/tasks/${taskId}`, task)
+      .put(`http://localhost:3001/api/tasks/${taskId}`, task, config)
       .then((response) => {
         // After updating the task, redirect to the task list or task details page
-        history.push(`/tasks/${taskId}`);
+        navigate("/tasks");
       })
       .catch((error) => {
         console.error("Error updating task:", error);
