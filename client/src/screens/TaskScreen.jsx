@@ -26,13 +26,38 @@ const TaskScreen = () => {
     priorityEnum,
     createTask,
     deleteTask,
+    loading,
+    errorMessage,
   } = useTasks();
+
+  // Handle empty tasks and errors gracefully
+  const renderTaskList = () => {
+    if (loading) {
+      return <h3>Loading tasks...</h3>;
+    }
+
+    if (errorMessage) {
+      return <h3>{errorMessage}</h3>;
+    }
+
+    if (!tasks || tasks.length === 0) {
+      return <h3>No tasks available</h3>;
+    }
+
+    return (
+      <div className="row">
+        {tasks.map((task) => (
+          <TaskCard key={task._id} task={task} onDelete={deleteTask} />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="task-screen">
       <h2>Your Tasks</h2>
-      {/* ---------------------------------------------------------------- */}
-      {/* ---------------------------------------------------------------- */}
+
+      {/* Task Form */}
       <TaskForm
         title={title}
         setTitle={setTitle}
@@ -51,17 +76,9 @@ const TaskScreen = () => {
         errors={errors}
         createTask={createTask}
       />
-      {/* ---------------------------------------------------------------- */}
-      {/* ---------------------------------------------------------------- */}
-      {!tasks || tasks.length === 0 ? (
-        <h2>No tasks</h2>
-      ) : (
-        <div className="row">
-          {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} onDelete={deleteTask} />
-          ))}
-        </div>
-      )}
+
+      {/* Task List */}
+      {renderTaskList()}
     </div>
   );
 };
