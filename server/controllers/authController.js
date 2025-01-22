@@ -10,7 +10,6 @@ const generateToken = (id) => {
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
-  console.log("HELLO");
   const { name, email, password } = req.body;
   const userExists = await User.findOne({ email });
 
