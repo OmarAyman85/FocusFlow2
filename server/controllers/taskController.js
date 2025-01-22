@@ -3,12 +3,14 @@ import asyncHandler from "express-async-handler";
 import Task from "../models/Task.js";
 
 export const createTask = asyncHandler(async (req, res) => {
-  const { title, description, category, deadline } = req.body;
+  const { title, category, description, priority, status, dueDate } = req.body;
   const task = await Task.create({
     title,
-    description,
     category,
-    deadline,
+    description,
+    priority,
+    status,
+    dueDate,
     user: req.user.id,
   });
   res.status(201).json(task);
