@@ -85,6 +85,12 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      address: user.address,
+      role: user.role,
+      profileImage: user.profileImage,
+      dateOfBirth: user.dateOfBirth,
+      socialAccounts: user.socialAccounts,
     });
   } else {
     res.status(404);

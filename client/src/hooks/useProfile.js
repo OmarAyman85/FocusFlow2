@@ -9,6 +9,7 @@ const useUserProfile = () => {
   // Function to retrieve user data from API
   const getUserProfile = async (token) => {
     try {
+      console.log("I AM HERE IN USE PROFILE HOOK");
       const config = {
         headers: {
           "Content-Type": "application/json",
