@@ -76,6 +76,14 @@ const NavBar = () => {
             </li>
             <li className="nav-item">
               <NavLink
+                className={({ isActive }) => getLinkClassName(isActive)}
+                to="/Admin"
+              >
+                Admin
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
                 className={({ isActive }) =>
                   getLinkClassName(isActive) + " disabled"
                 }
