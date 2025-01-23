@@ -1,16 +1,18 @@
-// ** Controllers: Authentication and Task Management **
-// controllers/authController.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role }, // Include role in the payload
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role = "user" } = req.body;
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -18,13 +20,14 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, role });
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      role: user.role,
+      token: generateToken(user),
     });
   } else {
     res.status(400);
@@ -41,7 +44,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      token: generateToken(user),
     });
   } else {
     res.status(401);

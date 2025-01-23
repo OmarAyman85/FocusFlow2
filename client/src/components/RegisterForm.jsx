@@ -22,7 +22,7 @@ const RegisterForm = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (name && email && password) {
-      handleSubmit();
+      handleSubmit(e);
       setIsSubmitted(true);
     } else {
       setIsSubmitted(false);

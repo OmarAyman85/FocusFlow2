@@ -1,8 +1,3 @@
-// TASK MANAGEMENT SYSTEM - MERN STACK, FLUTTER, ODOO, AND MACHINE LEARNING INTEGRATION
-
-// ** BACKEND: Node.js + Express + MongoDB (JWT Authorization) **
-
-// server.js
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";

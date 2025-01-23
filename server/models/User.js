@@ -1,5 +1,3 @@
-// ** Models: User and Task **
-// models/User.js
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -8,6 +6,11 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ["user", "admin", "editor"], // Define allowed roles
+      default: "user", // Default role for new users
+    },
   },
   { timestamps: true }
 );
