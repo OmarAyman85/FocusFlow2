@@ -12,7 +12,17 @@ const generateToken = (user) => {
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, role = "user" } = req.body;
+  const {
+    name,
+    email,
+    password,
+    phone,
+    address = {},
+    role = "user",
+    profileImage = "default-profile.png",
+    dateOfBirth,
+    socialAccounts = {},
+  } = req.body;
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -20,13 +30,28 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const user = await User.create({ name, email, password, role });
+  const user = await User.create({
+    name,
+    email,
+    password,
+    phone,
+    address,
+    role,
+    profileImage,
+    dateOfBirth,
+    socialAccounts,
+  });
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      address: user.address,
       role: user.role,
+      profileImage: user.profileImage,
+      dateOfBirth: user.dateOfBirth,
+      socialAccounts: user.socialAccounts,
       token: generateToken(user),
     });
   } else {
