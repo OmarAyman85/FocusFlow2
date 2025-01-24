@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types"; // Add PropTypes import
 import useProfile from "../hooks/useProfile";
 import Loader from "react-js-loader";
 import ErrorScreen from "./ErrorScreen";
@@ -79,6 +80,7 @@ const ProfileScreen = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Add form submission logic here
     console.log("Updated User Data:", formData);
     setEditMode(false); // Disable edit mode after saving
   };
@@ -92,7 +94,7 @@ const ProfileScreen = () => {
             {/* Display profile image */}
             <div>
               <img
-                src={formData.profileImage || "default-image.jpg"}
+                src={formData.profileImage || "default-image.jpg"} // Add default profile image
                 alt={`${user?.name || "User"}'s Profile`}
                 style={{ width: "150px", height: "150px", borderRadius: "50%" }}
               />
@@ -186,6 +188,12 @@ const ProfileScreen = () => {
       )}
     </div>
   );
+};
+
+ProfileScreen.propTypes = {
+  user: PropTypes.object,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 export default ProfileScreen;

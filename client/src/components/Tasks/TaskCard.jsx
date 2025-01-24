@@ -23,7 +23,7 @@ const TaskCard = ({ task, onDelete }) => {
             Modify
           </NavLink>
           <button
-            onClick={() => onDelete(id)}
+            onClick={() => onDelete(_id)}
             className="delete-btn"
             aria-label="Delete Task"
           >

@@ -1,26 +1,13 @@
 import React from "react";
 
 const TaskForm = ({
-  title,
-  setTitle,
-  category,
-  setCategory,
-  description,
-  setDescription,
-  status,
-  setStatus,
-  priority,
-  setPriority,
-  dueDate,
-  setDueDate,
-  priorityEnum,
+  taskFormData,
+  handleInputChange,
   statusEnum,
+  priorityEnum,
   errors,
   createTask,
 }) => {
-  // Handle input changes for both text fields and radio buttons
-  const handleInputChange = (setter) => (e) => setter(e.target.value);
-
   return (
     <div className="container">
       <div className="row justify-content-md-center">
@@ -34,8 +21,8 @@ const TaskForm = ({
                 </label>
                 <input
                   name="title"
-                  value={title}
-                  onChange={handleInputChange(setTitle)}
+                  value={taskFormData.title}
+                  onChange={handleInputChange}
                   type="text"
                   className="form-control"
                   id="title"
@@ -52,8 +39,8 @@ const TaskForm = ({
                 </label>
                 <input
                   name="category"
-                  value={category}
-                  onChange={handleInputChange(setCategory)}
+                  value={taskFormData.category}
+                  onChange={handleInputChange}
                   type="text"
                   className="form-control"
                   id="category"
@@ -70,8 +57,8 @@ const TaskForm = ({
                 </label>
                 <textarea
                   name="description"
-                  value={description}
-                  onChange={handleInputChange(setDescription)}
+                  value={taskFormData.description}
+                  onChange={handleInputChange}
                   className="form-control"
                   id="description"
                 />
@@ -93,8 +80,8 @@ const TaskForm = ({
                         id={p}
                         name="priority"
                         value={p}
-                        checked={priority === p}
-                        onChange={handleInputChange(setPriority)}
+                        checked={taskFormData.priority === p}
+                        onChange={handleInputChange}
                         className="form-check-input"
                       />
                       <label htmlFor={p} className="form-check-label">
@@ -121,8 +108,8 @@ const TaskForm = ({
                         id={s}
                         name="status"
                         value={s}
-                        checked={status === s}
-                        onChange={handleInputChange(setStatus)}
+                        checked={taskFormData.status === s}
+                        onChange={handleInputChange}
                         className="form-check-input"
                       />
                       <label htmlFor={s} className="form-check-label">
@@ -143,8 +130,8 @@ const TaskForm = ({
                 </label>
                 <input
                   name="dueDate"
-                  value={dueDate}
-                  onChange={handleInputChange(setDueDate)}
+                  value={taskFormData.dueDate}
+                  onChange={handleInputChange}
                   type="datetime-local"
                   className="form-control"
                   id="dueDate"

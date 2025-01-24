@@ -5,25 +5,14 @@ import { NavLink } from "react-router-dom";
 import TaskForm from "../components/Tasks/TaskForm";
 import TaskCard from "../components/Tasks/TaskCard";
 import useTasks from "../hooks/useTasks";
+import { statusEnum, priorityEnum } from "../hooks/taskConstants";
 
 const TaskScreen = () => {
   const {
     tasks,
     errors,
-    title,
-    setTitle,
-    category,
-    setCategory,
-    description,
-    setDescription,
-    status,
-    setStatus,
-    priority,
-    setPriority,
-    dueDate,
-    setDueDate,
-    statusEnum,
-    priorityEnum,
+    taskFormData,
+    handleInputChange,
     createTask,
     deleteTask,
     loading,
@@ -59,20 +48,10 @@ const TaskScreen = () => {
 
       {/* Task Form */}
       <TaskForm
-        title={title}
-        setTitle={setTitle}
-        category={category}
-        setCategory={setCategory}
-        description={description}
-        setDescription={setDescription}
-        status={status}
-        setStatus={setStatus}
-        priority={priority}
-        setPriority={setPriority}
-        dueDate={dueDate}
-        setDueDate={setDueDate}
-        priorityEnum={priorityEnum}
+        taskFormData={taskFormData}
+        handleInputChange={handleInputChange}
         statusEnum={statusEnum}
+        priorityEnum={priorityEnum}
         errors={errors}
         createTask={createTask}
       />

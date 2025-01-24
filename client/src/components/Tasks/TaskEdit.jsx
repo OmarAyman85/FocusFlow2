@@ -1,34 +1,39 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
+import { statusEnum, priorityEnum } from "../../hooks/taskConstants";
 
 const TaskEdit = () => {
-  const {
-    tasks = [],
-    errors,
-    statusEnum,
-    priorityEnum,
-    taskId,
-    updateTask,
-  } = useTasks();
-  const [task, setTask] = useState(null);
+  const { errors, taskId, taskFormData, handleInputChange, updateTask } =
+    useTasks();
+  const [task, setTask] = useState({
+    title: "",
+    category: "",
+    description: "",
+    status: "",
+    priority: "",
+    dueDate: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Effect to set the task when taskId or tasks change
   useEffect(() => {
-    const selectedTask = tasks.find((task) => task._id === taskId);
-    setTask(selectedTask || null);
-  }, [taskId, tasks]);
+    if (taskFormData && taskId) {
+      setTask(taskFormData);
+    }
+  }, [taskFormData, taskId]);
 
   // Handler for form input changes
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setTask((prevTask) => ({
-      ...prevTask,
-      [name]: value,
-    }));
-  }, []);
-
-  if (!task) return <div>Loading...</div>;
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setTask((prevTask) => ({
+        ...prevTask,
+        [name]: value,
+      }));
+      handleInputChange(e);
+    },
+    [setTask, handleInputChange]
+  );
 
   // Render input fields
   const renderInputField = (
@@ -46,7 +51,7 @@ const TaskEdit = () => {
       <input
         type={type}
         name={name}
-        value={value}
+        value={value || ""}
         onChange={handleChange}
         className="form-control"
         id={name}
@@ -81,78 +86,89 @@ const TaskEdit = () => {
       {error && <div className="text-danger">{error[0]}</div>}
     </div>
   );
-
   return (
     <div className="container">
       <div className="row justify-content-md-center">
         <div className="col-8">
-          <form onSubmit={(e) => updateTask(e, task)} noValidate>
-            {/* Title */}
-            {renderInputField(
-              "text",
-              "Title",
-              "title",
-              task.title,
-              errors.title
-            )}
-
-            {/* Category */}
-            {renderInputField(
-              "text",
-              "Category",
-              "category",
-              task.category,
-              errors.category
-            )}
-
-            {/* Description */}
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Description:
-              </label>
-              <textarea
-                name="description"
-                value={task.description}
-                onChange={handleChange}
-                className="form-control"
-                id="description"
-              />
-              {errors.description && (
-                <div className="text-danger">{errors.description}</div>
+          {task ? (
+            <form
+              onSubmit={(e) => {
+                console.log("taskFormData: ", task), updateTask(e);
+              }}
+              noValidate
+            >
+              {/* Title */}
+              {renderInputField(
+                "text",
+                "Title",
+                "title",
+                task.title,
+                errors.title
               )}
-            </div>
 
-            {/* Priority */}
-            {renderRadioButtons(
-              "Priority",
-              "priority",
-              priorityEnum,
-              task.priority,
-              errors.priority
-            )}
+              {/* Category */}
+              {renderInputField(
+                "text",
+                "Category",
+                "category",
+                task.category,
+                errors.category
+              )}
 
-            {/* Status */}
-            {renderRadioButtons(
-              "Status",
-              "status",
-              statusEnum,
-              task.status,
-              errors.status
-            )}
+              {/* Description */}
+              <div className="mb-3">
+                <label htmlFor="description" className="form-label">
+                  Description:
+                </label>
+                <textarea
+                  name="description"
+                  value={task.description || ""}
+                  onChange={handleChange}
+                  className="form-control"
+                  id="description"
+                />
+                {errors.description && (
+                  <div className="text-danger">{errors.description}</div>
+                )}
+              </div>
 
-            {/* Due Date */}
-            {renderInputField(
-              "datetime-local",
-              "Due Date",
-              "dueDate",
-              task.dueDate,
-              errors.dueDate
-            )}
+              {/* Priority */}
+              {renderRadioButtons(
+                "Priority",
+                "priority",
+                priorityEnum,
+                task.priority,
+                errors.priority
+              )}
 
-            <button type="submit" className="btn btn-success">
-              Update
-            </button>
-          </form>
+              {/* Status */}
+              {renderRadioButtons(
+                "Status",
+                "status",
+                statusEnum,
+                task.status,
+                errors.status
+              )}
+
+              {/* Due Date */}
+              {renderInputField(
+                "datetime-local",
+                "Due Date",
+                "dueDate",
+                task.dueDate,
+                errors.dueDate
+              )}
+
+              <button type="submit" className="btn btn-success">
+                Update
+              </button>
+              {errorMessage && (
+                <div className="text-danger mt-3">{errorMessage}</div>
+              )}
+            </form>
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
       </div>
     </div>
