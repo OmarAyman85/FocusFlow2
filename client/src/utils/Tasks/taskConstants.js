@@ -1,3 +1,5 @@
+export const statusEnum = ["pending", "in-progress", "completed"];
+export const priorityEnum = ["low", "medium", "high"];
 export const getUserInfo = () =>
   JSON.parse(localStorage.getItem("userInfo")) || {};
 

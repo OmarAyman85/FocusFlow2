@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getConfig } from "./taskHelpers";
+import { getConfig } from "./taskConstants";
 import { validateTask } from "./taskValidation";
 
 const API_BASE_URL = "http://localhost:3001/api/tasks";

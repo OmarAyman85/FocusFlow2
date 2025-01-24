@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
-import { statusEnum, priorityEnum } from "../../hooks/taskConstants";
+import { statusEnum, priorityEnum } from "../../utils/Tasks/taskConstants";
 
 const TaskEdit = () => {
   const { errors, taskId, taskFormData, handleInputChange, updateTask } =
@@ -91,12 +91,7 @@ const TaskEdit = () => {
       <div className="row justify-content-md-center">
         <div className="col-8">
           {task ? (
-            <form
-              onSubmit={(e) => {
-                console.log("taskFormData: ", task), updateTask(e);
-              }}
-              noValidate
-            >
+            <form onSubmit={(e) => updateTask(e)} noValidate>
               {/* Title */}
               {renderInputField(
                 "text",

@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import TaskForm from "../components/Tasks/TaskForm";
 import TaskCard from "../components/Tasks/TaskCard";
 import useTasks from "../hooks/useTasks";
-import { statusEnum, priorityEnum } from "../hooks/taskConstants";
+import { statusEnum, priorityEnum } from "../utils/Tasks/taskConstants";
 
 const TaskScreen = () => {
   const {

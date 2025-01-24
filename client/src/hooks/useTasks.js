@@ -6,8 +6,8 @@ import {
   createTask,
   updateTask,
   deleteTask,
-} from "./taskApi";
-import { validateTask } from "./taskValidation";
+} from "../utils/Tasks/taskApi";
+import { validateTask } from "../utils/Tasks/taskValidation";
 
 const useTasks = () => {
   const [tasks, setTasks] = useState([]);
