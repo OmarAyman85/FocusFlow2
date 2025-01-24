@@ -6,6 +6,7 @@ import TaskForm from "../components/Tasks/TaskForm";
 import TaskCard from "../components/Tasks/TaskCard";
 import useTasks from "../hooks/useTasks";
 import { statusEnum, priorityEnum } from "../utils/Tasks/taskConstants";
+import Loader from "react-js-loader";
 
 const TaskScreen = () => {
   const {
@@ -18,11 +19,21 @@ const TaskScreen = () => {
     loading,
     errorMessage,
   } = useTasks();
+  const [color, setColor] = useState("#008000");
 
   // Handle empty tasks and errors gracefully
   const renderTaskList = () => {
     if (loading) {
-      return <h3>Loading tasks...</h3>;
+      return (
+        <div className="mt-5">
+          <Loader
+            type="bubble-scale"
+            bgColor={color}
+            color={color}
+            size={150}
+          />
+        </div>
+      );
     }
 
     if (errorMessage) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
 import { statusEnum, priorityEnum } from "../../utils/Tasks/taskConstants";
+import Loader from "react-js-loader";
 
 const TaskEdit = () => {
   const { errors, taskId, taskFormData, handleInputChange, updateTask } =
@@ -15,6 +16,7 @@ const TaskEdit = () => {
     dueDate: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [color, setColor] = useState("#008000");
 
   useEffect(() => {
     if (taskFormData && taskId) {
@@ -162,7 +164,14 @@ const TaskEdit = () => {
               )}
             </form>
           ) : (
-            <div>Loading...</div>
+            <div className="mt-5">
+              <Loader
+                type="bubble-scale"
+                bgColor={color}
+                color={color}
+                size={150}
+              />
+            </div>
           )}
         </div>
       </div>
