@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       create: (context) => TaskProvider(),
       child: MaterialApp(
         title: 'FocusFlow',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Colors.green),
         home: LoginScreen(),
         routes: {
           '/home': (context) => HomeScreen(),
